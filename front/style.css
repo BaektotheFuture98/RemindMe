@@ -159,6 +159,14 @@ select:focus-visible {
   display: block;
 }
 
+.panel-home {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  padding-top: min(20vh, 10rem);
+}
+
 .eyebrow {
   margin: 0;
   color: var(--muted);
@@ -187,6 +195,37 @@ select:focus-visible {
   margin-top: 1rem;
 }
 
+.ask-form-minimal {
+  margin: 0 auto;
+  max-width: 760px;
+}
+
+.search-shell {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.9);
+  padding: 0.42rem;
+  box-shadow: 0 14px 34px rgba(30, 14, 60, 0.12);
+}
+
+.search-shell:focus-within {
+  border-color: rgba(91, 46, 230, 0.4);
+  box-shadow: 0 0 0 3px rgba(91, 46, 230, 0.16), 0 14px 34px rgba(30, 14, 60, 0.12);
+}
+
+.search-shell input {
+  border: 0;
+  background: transparent;
+  padding: 0.88rem 1rem;
+}
+
+.search-shell input:focus-visible {
+  outline: none;
+}
+
 textarea,
 input,
 select {
@@ -211,6 +250,11 @@ textarea {
   justify-content: space-between;
 }
 
+.ask-actions-minimal {
+  justify-content: flex-start;
+  margin-top: 0.62rem;
+}
+
 .text-link {
   border: 0;
   background: transparent;
@@ -221,8 +265,8 @@ textarea {
 }
 
 .send-btn {
-  width: 3rem;
-  height: 3rem;
+  width: 2.85rem;
+  height: 2.85rem;
   border-radius: 999px;
   border: 0;
   background: linear-gradient(150deg, var(--violet) 0%, var(--pink) 100%);
@@ -499,6 +543,11 @@ textarea {
   .panel {
     border-radius: 22px;
   }
+
+  .panel-home {
+    border-radius: 0;
+    padding-top: min(16vh, 7rem);
+  }
 }
 
 @media (max-width: 640px) {
@@ -514,6 +563,15 @@ textarea {
   .hero-card {
     margin-top: 0.5rem;
     border-radius: 20px;
+  }
+
+  .panel-home {
+    padding-top: min(12vh, 4.2rem);
+  }
+
+  .search-shell input {
+    padding-left: 0.7rem;
+    font-size: 0.95rem;
   }
 
   .manual-actions {

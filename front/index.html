@@ -41,26 +41,24 @@
     <main class="main">
       <p id="app-notice" class="notice" role="status" aria-live="polite"></p>
 
-      <section id="panel-home" class="panel is-active" data-panel="home">
-        <div class="hero-card">
-          <p class="eyebrow">오늘의 영어 메모</p>
-          <h1>영어 표현, 숙어, 예문을 물어보세요</h1>
-          <form id="ask-form" class="ask-form">
-            <label class="sr-only" for="ask-input">영어 표현 입력</label>
-            <textarea
+      <section id="panel-home" class="panel panel-home is-active" data-panel="home">
+        <form id="ask-form" class="ask-form ask-form-minimal">
+          <label class="sr-only" for="ask-input">영어 표현 입력</label>
+          <div class="search-shell">
+            <input
               id="ask-input"
+              type="text"
               aria-label="영어 표현 입력"
-              placeholder="예) call it a day 뜻이 뭐야?"
-              rows="3"
-            ></textarea>
-            <div class="ask-actions">
-              <button id="manual-link" class="text-link" type="button">+ 직접 추가</button>
-              <button id="ask-submit" class="send-btn" type="submit" aria-label="표현 저장">
-                ↑
-              </button>
-            </div>
-          </form>
-        </div>
+              placeholder="영어 표현, 숙어, 예문을 물어보세요"
+            />
+            <button id="ask-submit" class="send-btn" type="submit" aria-label="표현 저장">
+              ↑
+            </button>
+          </div>
+          <div class="ask-actions ask-actions-minimal">
+            <button id="manual-link" class="text-link" type="button">+ 직접 추가</button>
+          </div>
+        </form>
       </section>
 
       <section id="panel-quiz" class="panel" data-panel="quiz">
