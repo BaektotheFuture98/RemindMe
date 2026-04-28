@@ -24,7 +24,7 @@
       Menu
     </button>
 
-    <aside id="sidebar" class="sidebar" aria-hidden="true">
+    <aside id="sidebar" class="sidebar" aria-hidden="true" inert>
       <div class="brand">
         <p class="brand-mark">RemindMe</p>
         <p class="brand-copy">물어보고, 저장하고, 알림으로 복습해요.</p>
@@ -101,7 +101,13 @@
           <p>현재 선택: <strong id="selected-reminder-time">-</strong></p>
         </div>
         <div class="routine-toolbar">
-          <button id="reminder-form-toggle" class="circle-btn" type="button" aria-expanded="false">
+          <button
+            id="reminder-form-toggle"
+            class="circle-btn"
+            type="button"
+            aria-expanded="false"
+            aria-label="알림 추가 폼 열기"
+          >
             +
           </button>
         </div>

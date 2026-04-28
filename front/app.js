@@ -84,6 +84,8 @@ const quizBank = [
   },
 ];
 
+const MAX_QUESTIONS_PER_SESSION = 50;
+
 const els = {
   menuTrigger: document.querySelector("#menu-trigger"),
   sidebar: document.querySelector("#sidebar"),
@@ -144,6 +146,13 @@ function toggleSidebar(isOpen) {
   els.menuTrigger.setAttribute("aria-expanded", String(isOpen));
   els.menuTrigger.setAttribute("aria-label", isOpen ? "메뉴 닫기" : "메뉴 열기");
   els.sidebar.setAttribute("aria-hidden", String(!isOpen));
+  els.sidebar.inert = !isOpen;
+  for (const nav of els.navItems) {
+    nav.tabIndex = isOpen ? 0 : -1;
+  }
+  if (isOpen) {
+    els.navItems[0]?.focus();
+  }
 }
 
 function getSelectedReminder() {
@@ -234,14 +243,40 @@ function syncQuizSummary() {
   els.quizCount.textContent = `${reminder.questionCount}문제`;
 }
 
-function pickQuestions(count) {
-  const shuffled = [...quizBank];
-  for (let i = shuffled.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+function shuffleQuestions(items) {
+  const shuffled = [...items];
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
   }
-  const size = Math.min(count, shuffled.length);
-  return shuffled.slice(0, size);
+  return shuffled;
+}
+
+function clampQuestionCount(rawCount) {
+  const parsed = Number.parseInt(String(rawCount), 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return 1;
+  }
+  return Math.min(parsed, MAX_QUESTIONS_PER_SESSION);
+}
+
+function pickQuestions(count) {
+  if (quizBank.length === 0) {
+    return [];
+  }
+
+  const targetCount = clampQuestionCount(count);
+  const selected = [];
+  while (selected.length < targetCount) {
+    const cycle = shuffleQuestions(quizBank);
+    for (const question of cycle) {
+      selected.push(question);
+      if (selected.length === targetCount) {
+        break;
+      }
+    }
+  }
+  return selected;
 }
 
 function showQuizIntro() {
@@ -255,6 +290,10 @@ function startQuiz() {
   if (!reminder) {
     setNotice("먼저 시간 설정에서 알림을 선택해 주세요.");
     setPanel("routine");
+    return;
+  }
+  if (quizBank.length === 0) {
+    setNotice("퀴즈 문항이 아직 없어요.");
     return;
   }
   state.quizSession = {
@@ -365,6 +404,12 @@ function bindEvents() {
     toggleSidebar(!state.sidebarOpen);
   });
   els.sidebarBackdrop.addEventListener("click", () => toggleSidebar(false));
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && state.sidebarOpen) {
+      toggleSidebar(false);
+      els.menuTrigger.focus();
+    }
+  });
 
   els.navItems.forEach((item) => {
     item.addEventListener("click", () => {
