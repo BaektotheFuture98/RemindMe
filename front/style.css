@@ -19,10 +19,18 @@ body {
   min-height: 100vh;
   color: var(--ink);
   font-family: "IBM Plex Sans KR", sans-serif;
-  background: linear-gradient(155deg, #ede6ff 0%, #f3ecff 45%, #f7f4ff 100%);
+  background:
+    radial-gradient(120% 120% at 10% 20%, rgba(91, 46, 230, 0.18), transparent 58%),
+    radial-gradient(95% 95% at 85% 18%, rgba(108, 72, 235, 0.15), transparent 62%),
+    radial-gradient(110% 110% at 55% 82%, rgba(74, 36, 191, 0.12), transparent 60%),
+    linear-gradient(155deg, #ede6ff 0%, #f3ecff 45%, #f7f4ff 100%);
   background-attachment: fixed;
-  background-size: 220% 220%;
-  animation: violet-wave 24s ease-in-out infinite;
+  background-size:
+    180% 180%,
+    170% 170%,
+    190% 190%,
+    220% 220%;
+  animation: violet-wave 28s ease-in-out infinite alternate;
 }
 
 .menu-trigger {
@@ -208,7 +216,6 @@ select:focus-visible {
   background: rgba(255, 255, 255, 0.93);
   padding: 0.42rem;
   box-shadow: 0 14px 34px rgba(30, 14, 60, 0.12);
-  animation: search-float 4.8s ease-in-out infinite;
 }
 
 .search-shell:focus-within {
@@ -537,29 +544,30 @@ textarea {
 
 @keyframes violet-wave {
   0% {
-    background-position: 0% 50%;
+    background-position:
+      0% 50%,
+      100% 35%,
+      30% 100%,
+      0% 50%;
   }
   50% {
-    background-position: 100% 50%;
+    background-position:
+      100% 55%,
+      0% 65%,
+      70% 0%,
+      100% 45%;
   }
   100% {
-    background-position: 0% 50%;
-  }
-}
-
-@keyframes search-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-4px);
+    background-position:
+      20% 35%,
+      80% 20%,
+      40% 80%,
+      30% 65%;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body,
-  .search-shell {
+  body {
     animation: none;
   }
 }
