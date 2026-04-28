@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RemindMe</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <button
+      id="menu-trigger"
+      class="menu-trigger"
+      type="button"
+      aria-controls="sidebar"
+      aria-expanded="false"
+      aria-label="메뉴 열기"
+    >
+      Menu
+    </button>
+
+    <aside id="sidebar" class="sidebar" aria-hidden="true">
+      <div class="brand">
+        <p class="brand-mark">RemindMe</p>
+        <p class="brand-copy">물어보고, 저장하고, 알림으로 복습해요.</p>
+      </div>
+      <nav class="sidebar-nav" aria-label="주요 메뉴">
+        <button class="nav-item is-active" data-nav="home" type="button">홈</button>
+        <button class="nav-item" data-nav="quiz" type="button">바로 복습</button>
+        <button class="nav-item" data-nav="routine" type="button">시간 설정</button>
+        <button class="nav-item" data-nav="memory" type="button">기억 저장소</button>
+      </nav>
+    </aside>
+    <div id="sidebar-backdrop" class="sidebar-backdrop" aria-hidden="true"></div>
+
+    <main class="main">
+      <p id="app-notice" class="notice" role="status" aria-live="polite"></p>
+
+      <section id="panel-home" class="panel is-active" data-panel="home">
+        <div class="hero-card">
+          <p class="eyebrow">오늘의 영어 메모</p>
+          <h1>영어 표현, 숙어, 예문을 물어보세요</h1>
+          <form id="ask-form" class="ask-form">
+            <label class="sr-only" for="ask-input">영어 표현 입력</label>
+            <textarea
+              id="ask-input"
+              aria-label="영어 표현 입력"
+              placeholder="예) call it a day 뜻이 뭐야?"
+              rows="3"
+            ></textarea>
+            <div class="ask-actions">
+              <button id="manual-link" class="text-link" type="button">+ 직접 추가</button>
+              <button id="ask-submit" class="send-btn" type="submit" aria-label="표현 저장">
+                ↑
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section id="panel-quiz" class="panel" data-panel="quiz">
+        <div class="panel-head">
+          <p class="eyebrow">바로 복습</p>
+          <h2>짧고 예측 가능한 퀴즈</h2>
+        </div>
+        <div id="quiz-intro" class="quiz-intro">
+          <div class="chips">
+            <span id="quiz-time" class="chip">08:10</span>
+            <span id="quiz-duration" class="chip">10분</span>
+            <span id="quiz-count" class="chip">5문제</span>
+          </div>
+          <p>알림 하나를 고르고 시작하면, 설정한 문제 수만큼만 출제해요.</p>
+          <button id="start-quiz" class="primary-btn" type="button">퀴즈 시작</button>
+        </div>
+        <div id="quiz-card" class="quiz-card is-hidden">
+          <p id="quiz-progress" class="quiz-progress"></p>
+          <h3 id="quiz-question"></h3>
+          <div id="quiz-choices" class="quiz-choices"></div>
+          <p id="quiz-feedback" class="quiz-feedback"></p>
+          <button id="quiz-next" class="secondary-btn is-hidden" type="button">다음 문제</button>
+        </div>
+        <div id="quiz-done" class="quiz-done is-hidden">
+          <h3>복습 완료</h3>
+          <p id="quiz-result-copy"></p>
+          <button id="quiz-restart" class="primary-btn" type="button">다시 풀기</button>
+        </div>
+      </section>
+
+      <section id="panel-routine" class="panel" data-panel="routine">
+        <div class="panel-head">
+          <p class="eyebrow">시간 설정</p>
+          <h2>알림별 복습량 관리</h2>
+        </div>
+        <div class="routine-summary">
+          <p><strong id="reminder-count">0개</strong>의 알림이 있어요.</p>
+          <p>현재 선택: <strong id="selected-reminder-time">-</strong></p>
+        </div>
+        <div class="routine-toolbar">
+          <button id="reminder-form-toggle" class="circle-btn" type="button" aria-expanded="false">
+            +
+          </button>
+        </div>
+        <form id="reminder-form" class="reminder-form is-hidden">
+          <label for="reminder-time">알림 시간</label>
+          <input id="reminder-time" type="time" value="08:10" required />
+          <label for="reminder-pack">복습량</label>
+          <select id="reminder-pack">
+            <option value="10|5">10분 · 5문제</option>
+            <option value="30|15">30분 · 15문제</option>
+            <option value="60|30">60분 · 30문제</option>
+          </select>
+          <button class="primary-btn" type="submit">추가</button>
+        </form>
+        <div id="reminder-list" class="reminder-list" role="list"></div>
+      </section>
+
+      <section id="panel-memory" class="panel" data-panel="memory">
+        <div class="panel-head">
+          <p class="eyebrow">기억 저장소</p>
+          <h2>저장된 표현 상태</h2>
+        </div>
+        <div id="memory-list" class="memory-list"></div>
+      </section>
+
+      <section id="panel-manual" class="panel" data-panel="manual">
+        <div class="panel-head">
+          <p class="eyebrow">직접 추가</p>
+          <h2>이미 아는 표현도 넣어두세요</h2>
+        </div>
+        <form id="manual-form" class="manual-form">
+          <label for="manual-expression">표현</label>
+          <input
+            id="manual-expression"
+            type="text"
+            aria-label="직접 추가 표현"
+            placeholder="예) break the ice"
+            required
+          />
+          <p class="manual-copy">
+            뜻과 예문은 AI가 자동으로 생성해서 복습 카드에 붙여둘게요.
+          </p>
+          <div class="manual-actions">
+            <button id="manual-home" class="secondary-btn" type="button">홈으로</button>
+            <button class="primary-btn" type="submit">추가</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
