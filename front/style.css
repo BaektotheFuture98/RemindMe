@@ -21,6 +21,8 @@ body {
   font-family: "IBM Plex Sans KR", sans-serif;
   background: linear-gradient(155deg, #ede6ff 0%, #f3ecff 45%, #f7f4ff 100%);
   background-attachment: fixed;
+  background-size: 220% 220%;
+  animation: violet-wave 24s ease-in-out infinite;
 }
 
 .menu-trigger {
@@ -206,6 +208,7 @@ select:focus-visible {
   background: rgba(255, 255, 255, 0.93);
   padding: 0.42rem;
   box-shadow: 0 14px 34px rgba(30, 14, 60, 0.12);
+  animation: search-float 4.8s ease-in-out infinite;
 }
 
 .search-shell:focus-within {
@@ -530,6 +533,35 @@ textarea {
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   border: 0;
+}
+
+@keyframes violet-wave {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes search-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body,
+  .search-shell {
+    animation: none;
+  }
 }
 
 @media (max-width: 920px) {
