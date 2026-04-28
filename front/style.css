@@ -141,11 +141,23 @@ select:focus-visible {
   padding: 5.5rem 1.2rem 2.5rem;
 }
 
+body.is-home .main {
+  min-height: 100vh;
+  padding: 0 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .notice {
   min-height: 1.4rem;
   margin: 0 auto 0.7rem;
   color: var(--violet-deep);
   font-size: 0.92rem;
+}
+
+body.is-home .notice {
+  display: none;
 }
 
 .panel {
@@ -172,6 +184,13 @@ select:focus-visible {
   backdrop-filter: none;
   min-height: calc(100vh - 9.6rem);
   padding-top: 0;
+}
+
+body.is-home .panel-home {
+  width: min(100%, 760px);
+  min-height: auto;
+  margin: 0;
+  padding: 0;
 }
 
 .eyebrow {
@@ -577,6 +596,10 @@ textarea {
     padding-top: 5.2rem;
   }
 
+  body.is-home .main {
+    padding: 0 1rem;
+  }
+
   .panel {
     border-radius: 22px;
   }
@@ -590,6 +613,10 @@ textarea {
 @media (max-width: 640px) {
   .main {
     padding: 5.1rem 0.78rem 1.5rem;
+  }
+
+  body.is-home .main {
+    padding: 0 0.78rem;
   }
 
   .menu-trigger {

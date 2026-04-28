@@ -129,6 +129,7 @@ function setNotice(message) {
 
 function setPanel(panelName) {
   state.activePanel = panelName;
+  document.body.classList.toggle("is-home", panelName === "home");
   for (const panel of els.panels) {
     panel.classList.toggle("is-active", panel.dataset.panel === panelName);
   }
