@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from core.dependencies import get_learning_service
-from schemas.memory import MemoryCreate, MemoryRead
-from schemas.quiz import QuizPreviewRead, QuizQuestionRead
-from schemas.reminder import ReminderCreate, ReminderRead
-from services.learning_service import LearningService
+from backend.core.dependencies import get_learning_service
+from backend.schemas.memory import MemoryCreate, MemoryRead
+from backend.schemas.quiz import QuizPreviewRead, QuizQuestionRead
+from backend.schemas.reminder import ReminderCreate, ReminderRead
+from backend.services.learning_service import LearningService
 
 router = APIRouter(prefix="/api", tags=["learning"])
 

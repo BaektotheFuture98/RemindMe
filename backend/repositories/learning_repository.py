@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from models.entities import MemoryItem, QuizQuestion, Reminder
+from backend.models.entities import MemoryItem, QuizQuestion, Reminder
 
 
 class InMemoryLearningRepository:

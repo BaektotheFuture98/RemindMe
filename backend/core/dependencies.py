@@ -1,5 +1,5 @@
-from repositories.learning_repository import InMemoryLearningRepository
-from services.learning_service import LearningService
+from backend.repositories.learning_repository import InMemoryLearningRepository
+from backend.services.learning_service import LearningService
 
 repository = InMemoryLearningRepository()
 service = LearningService(repository=repository)

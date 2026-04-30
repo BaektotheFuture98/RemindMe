@@ -3,5 +3,6 @@ __pycache__/
 .DS_Store
 .env
 .venv/
+backend/.venv/
 dist/
 build/

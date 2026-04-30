@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from repositories.learning_repository import InMemoryLearningRepository
+from backend.repositories.learning_repository import InMemoryLearningRepository
 
 
 class LearningService:
