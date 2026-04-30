@@ -21,7 +21,7 @@
       aria-expanded="false"
       aria-label="메뉴 열기"
     >
-      Menu
+      메뉴
     </button>
 
     <aside id="sidebar" class="sidebar" aria-hidden="true" inert>
@@ -49,10 +49,10 @@
               id="ask-input"
               type="text"
               aria-label="영어 표현 입력"
-              placeholder="영어 표현, 숙어, 예문을 물어보세요"
+              placeholder="궁금한 표현을 입력해보세요"
             />
-            <button id="ask-submit" class="send-btn" type="submit" aria-label="표현 저장">
-              ↑
+            <button id="ask-submit" class="send-btn" type="submit" aria-label="입력 전송">
+              +
             </button>
           </div>
           <div class="ask-actions ask-actions-minimal">
@@ -67,12 +67,7 @@
           <h2>짧고 예측 가능한 퀴즈</h2>
         </div>
         <div id="quiz-intro" class="quiz-intro">
-          <div class="chips">
-            <span id="quiz-time" class="chip">08:10</span>
-            <span id="quiz-duration" class="chip">10분</span>
-            <span id="quiz-count" class="chip">5문제</span>
-          </div>
-          <p>알림 하나를 고르고 시작하면, 설정한 문제 수만큼만 출제해요.</p>
+          <p>저장된 복습 항목에서 자동으로 출제해요.</p>
           <button id="start-quiz" class="primary-btn" type="button">퀴즈 시작</button>
         </div>
         <div id="quiz-card" class="quiz-card is-hidden">
@@ -96,7 +91,7 @@
         </div>
         <div class="routine-summary">
           <p><strong id="reminder-count">0개</strong>의 알림이 있어요.</p>
-          <p>현재 선택: <strong id="selected-reminder-time">-</strong></p>
+          <p>활성 알림: <strong id="active-reminder-count">0개</strong></p>
         </div>
         <div class="routine-toolbar">
           <button
@@ -156,6 +151,6 @@
       </section>
     </main>
 
-    <script src="./app.js" type="module"></script>
+    <script src="./app.js" defer></script>
   </body>
 </html>

@@ -2,10 +2,9 @@ const state = {
   activePanel: "home",
   sidebarOpen: false,
   reminders: [
-    { id: "r1", time: "08:10", durationMinutes: 10, questionCount: 5 },
-    { id: "r2", time: "12:30", durationMinutes: 30, questionCount: 15 },
+    { id: "r1", time: "08:10", durationMinutes: 10, questionCount: 5, enabled: true },
+    { id: "r2", time: "12:30", durationMinutes: 30, questionCount: 15, enabled: true },
   ],
-  selectedReminderId: "r1",
   memories: [
     {
       id: "m1",
@@ -100,16 +99,13 @@ const els = {
   manualForm: document.querySelector("#manual-form"),
   manualInput: document.querySelector("#manual-expression"),
   reminderCount: document.querySelector("#reminder-count"),
-  selectedReminderTime: document.querySelector("#selected-reminder-time"),
+  activeReminderCount: document.querySelector("#active-reminder-count"),
   reminderList: document.querySelector("#reminder-list"),
   reminderFormToggle: document.querySelector("#reminder-form-toggle"),
   reminderForm: document.querySelector("#reminder-form"),
   reminderTime: document.querySelector("#reminder-time"),
   reminderPack: document.querySelector("#reminder-pack"),
   memoryList: document.querySelector("#memory-list"),
-  quizTime: document.querySelector("#quiz-time"),
-  quizDuration: document.querySelector("#quiz-duration"),
-  quizCount: document.querySelector("#quiz-count"),
   startQuiz: document.querySelector("#start-quiz"),
   quizIntro: document.querySelector("#quiz-intro"),
   quizCard: document.querySelector("#quiz-card"),
@@ -124,10 +120,45 @@ const els = {
 };
 
 function setNotice(message) {
-  els.notice.textContent = message;
+  const safeMessage = typeof message === "string" ? message : "";
+  els.notice.textContent = safeMessage;
+  document.body.classList.toggle("has-notice", safeMessage.length > 0);
+}
+
+function sortRemindersByTime() {
+  state.reminders.sort((a, b) => a.time.localeCompare(b.time));
+}
+
+function getCurrentTimeHHMM() {
+  const now = new Date();
+  const hour = String(now.getHours()).padStart(2, "0");
+  const minute = String(now.getMinutes()).padStart(2, "0");
+  return `${hour}:${minute}`;
+}
+
+function resolveAutoQuizReminder() {
+  const enabledReminders = state.reminders.filter((reminder) => reminder.enabled);
+  if (enabledReminders.length === 0) {
+    return null;
+  }
+  const sorted = [...enabledReminders].sort((a, b) => a.time.localeCompare(b.time));
+  const current = getCurrentTimeHHMM();
+  const upcoming = sorted.find((reminder) => reminder.time >= current);
+  return upcoming ?? sorted[0];
+}
+
+function resolveAutoQuizQuestionCount() {
+  const reminder = resolveAutoQuizReminder();
+  if (reminder) {
+    return clampQuestionCount(reminder.questionCount);
+  }
+  return null;
 }
 
 function setPanel(panelName) {
+  if (panelName === "home") {
+    setNotice("");
+  }
   state.activePanel = panelName;
   document.body.classList.toggle("is-home", panelName === "home");
   for (const panel of els.panels) {
@@ -156,26 +187,19 @@ function toggleSidebar(isOpen) {
   }
 }
 
-function getSelectedReminder() {
-  return state.reminders.find((reminder) => reminder.id === state.selectedReminderId) ?? null;
-}
-
 function renderRoutineHeader() {
   els.reminderCount.textContent = `${state.reminders.length}개`;
-  const selectedReminder = getSelectedReminder();
-  els.selectedReminderTime.textContent = selectedReminder
-    ? `${selectedReminder.time} · ${selectedReminder.durationMinutes}분 · ${selectedReminder.questionCount}문제`
-    : "-";
+  const enabledCount = state.reminders.filter((reminder) => reminder.enabled).length;
+  els.activeReminderCount.textContent = `${enabledCount}개`;
 }
 
 function renderReminderList() {
   els.reminderList.innerHTML = "";
   for (const reminder of state.reminders) {
-    const card = document.createElement("button");
-    card.type = "button";
+    const card = document.createElement("article");
     card.className = "reminder-card";
-    if (reminder.id === state.selectedReminderId) {
-      card.classList.add("is-selected");
+    if (!reminder.enabled) {
+      card.classList.add("is-disabled");
     }
     card.setAttribute("role", "listitem");
     card.innerHTML = `
@@ -183,13 +207,49 @@ function renderReminderList() {
         <strong>${reminder.time}</strong>
         <p class="reminder-meta">${reminder.durationMinutes}분 · ${reminder.questionCount}문제</p>
       </div>
-      <span class="badge">${reminder.id === state.selectedReminderId ? "선택됨" : "선택"}</span>
+      <label class="reminder-toggle">
+        <input type="checkbox" ${reminder.enabled ? "checked" : ""} aria-label="${reminder.time} 알림 활성화" />
+        <span>${reminder.enabled ? "활성" : "비활성"}</span>
+      </label>
     `;
-    card.addEventListener("click", () => {
-      state.selectedReminderId = reminder.id;
+    const checkbox = card.querySelector("input[type='checkbox']");
+    if (checkbox) {
+      checkbox.addEventListener("change", () => {
+        reminder.enabled = checkbox.checked;
+        setNotice(`${reminder.time} 알림을 ${reminder.enabled ? "활성화" : "비활성화"}했어요.`);
+        sortRemindersByTime();
+        renderRoutine();
+        syncQuizSummary();
+      });
+    }
+    card.addEventListener("click", (event) => {
+      if (event.target instanceof HTMLInputElement) {
+        return;
+      }
+      if (checkbox) {
+        checkbox.checked = !checkbox.checked;
+        reminder.enabled = checkbox.checked;
+        setNotice(`${reminder.time} 알림을 ${reminder.enabled ? "활성화" : "비활성화"}했어요.`);
+        sortRemindersByTime();
+        renderRoutine();
+        syncQuizSummary();
+      }
+    });
+    card.addEventListener("keydown", (event) => {
+      if (event.key !== " " && event.key !== "Enter") {
+        return;
+      }
+      event.preventDefault();
+      if (!checkbox) {
+        return;
+      }
+      checkbox.checked = !checkbox.checked;
+      reminder.enabled = checkbox.checked;
+      setNotice(`${reminder.time} 알림을 ${reminder.enabled ? "활성화" : "비활성화"}했어요.`);
       renderRoutine();
       syncQuizSummary();
     });
+    card.tabIndex = 0;
     els.reminderList.append(card);
   }
 }
@@ -232,16 +292,7 @@ function renderMemory() {
 }
 
 function syncQuizSummary() {
-  const reminder = getSelectedReminder();
-  if (!reminder) {
-    els.quizTime.textContent = "-";
-    els.quizDuration.textContent = "-";
-    els.quizCount.textContent = "-";
-    return;
-  }
-  els.quizTime.textContent = reminder.time;
-  els.quizDuration.textContent = `${reminder.durationMinutes}분`;
-  els.quizCount.textContent = `${reminder.questionCount}문제`;
+  // Quiz intro has no summary chips by design.
 }
 
 function shuffleQuestions(items) {
@@ -287,20 +338,20 @@ function showQuizIntro() {
 }
 
 function startQuiz() {
-  const reminder = getSelectedReminder();
-  if (!reminder) {
-    setNotice("먼저 시간 설정에서 알림을 선택해 주세요.");
-    setPanel("routine");
-    return;
-  }
   if (quizBank.length === 0) {
     setNotice("퀴즈 문항이 아직 없어요.");
+    return;
+  }
+  const questionCount = resolveAutoQuizQuestionCount();
+  if (questionCount === null) {
+    setNotice("활성화된 알림이 없어요. 시간 설정에서 체크해 주세요.");
+    setPanel("routine");
     return;
   }
   state.quizSession = {
     index: 0,
     score: 0,
-    questions: pickQuestions(reminder.questionCount),
+    questions: pickQuestions(questionCount),
     answered: false,
   };
   els.quizIntro.classList.add("is-hidden");
@@ -437,6 +488,7 @@ function bindEvents() {
     const expression = els.askInput.value.trim();
     if (!expression) {
       setNotice("표현을 입력해 주세요.");
+      els.askInput.focus();
       return;
     }
     addMemory(expression, "오늘 추가");
@@ -479,9 +531,10 @@ function bindEvents() {
       time,
       durationMinutes,
       questionCount,
+      enabled: true,
     };
     state.reminders.push(newReminder);
-    state.selectedReminderId = newReminder.id;
+    sortRemindersByTime();
     renderRoutine();
     syncQuizSummary();
     els.reminderForm.classList.add("is-hidden");
@@ -499,6 +552,7 @@ function bindEvents() {
 
 function init() {
   bindEvents();
+  sortRemindersByTime();
   renderRoutine();
   renderMemory();
   syncQuizSummary();
