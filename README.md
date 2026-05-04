@@ -1,4 +1,4 @@
-# RemindMe
+# Witness Me
 
 학습 내용을 가볍게 저장하고 다시 꺼내보는 프론트엔드 중심 MVP입니다.
 

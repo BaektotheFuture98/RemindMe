@@ -12,12 +12,9 @@ class InMemoryLearningRepository:
     """
 
     def __init__(self) -> None:
-        self._reminder_counter = 2
+        self._reminder_counter = 0
         self._memory_counter = 4
-        self._reminders: list[Reminder] = [
-            Reminder(id="r1", time="08:10", duration_minutes=10, question_count=5),
-            Reminder(id="r2", time="12:30", duration_minutes=30, question_count=15),
-        ]
+        self._reminders: list[Reminder] = []
         self._memories: list[MemoryItem] = [
             MemoryItem(
                 id="m1",

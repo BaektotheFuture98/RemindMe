@@ -2,79 +2,163 @@
 <html lang="ko">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>RemindMe</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap"
-      rel="stylesheet"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Witness Me</title>
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <button
-      id="menu-trigger"
-      class="menu-trigger"
-      type="button"
-      aria-controls="sidebar"
-      aria-expanded="false"
-      aria-label="메뉴 열기"
-    >
-      메뉴
-    </button>
-
-    <aside id="sidebar" class="sidebar" aria-hidden="true" inert>
+    <div class="motion-graphics" aria-hidden="true">
+      <span class="motion-sun"></span>
+      <span class="motion-ring motion-ring-one"></span>
+      <span class="motion-ring motion-ring-two"></span>
+      <span class="motion-spark motion-spark-one"></span>
+      <span class="motion-spark motion-spark-two"></span>
+    </div>
+    <header class="app-header" aria-label="앱 정보">
       <div class="brand">
-        <p class="brand-mark">RemindMe</p>
-        <p class="brand-copy">물어보고, 저장하고, 알림으로 복습해요.</p>
+        <p class="brand-mark">Witness Me</p>
       </div>
-      <nav class="sidebar-nav" aria-label="주요 메뉴">
-        <button class="nav-item is-active" data-nav="home" type="button">홈</button>
-        <button class="nav-item" data-nav="quiz" type="button">바로 복습</button>
-        <button class="nav-item" data-nav="routine" type="button">시간 설정</button>
-        <button class="nav-item" data-nav="memory" type="button">기억 저장소</button>
-      </nav>
-    </aside>
-    <div id="sidebar-backdrop" class="sidebar-backdrop" aria-hidden="true"></div>
+      <p class="brand-copy">뜻을 확인하고 다시 봐요.</p>
+    </header>
 
     <main class="main">
       <p id="app-notice" class="notice" role="status" aria-live="polite"></p>
 
       <section id="panel-home" class="panel panel-home is-active" data-panel="home">
         <form id="ask-form" class="ask-form ask-form-minimal">
-          <label class="sr-only" for="ask-input">영어 표현 입력</label>
+          <div class="home-prompt" aria-label="Witness Me 소개">
+            <p class="home-kicker">Witness Me</p>
+            <h1>궁금한 표현을 보내세요</h1>
+            <p>뜻과 뉘앙스, 저장 후보를 답장처럼 정리해요.</p>
+          </div>
+          <label class="sr-only" for="ask-input">언어 표현 검색</label>
           <div class="search-shell">
-            <input
+            <textarea
               id="ask-input"
-              type="text"
-              aria-label="영어 표현 입력"
-              placeholder="궁금한 표현을 입력해보세요"
-            />
-            <button id="ask-submit" class="send-btn" type="submit" aria-label="입력 전송">
-              +
+              aria-label="언어 표현 검색"
+              placeholder="예) irritating은 어떤 느낌이야?"
+              rows="1"
+            ></textarea>
+            <button id="ask-submit" class="send-btn" type="submit" aria-label="뜻 검색">
+              묻기
             </button>
           </div>
+          <p id="ask-status" class="ask-status" aria-live="polite"></p>
+          <div class="prompt-chips" aria-label="예시 질문">
+            <button class="prompt-chip" type="button" data-prompt="We all find him irritating 이게 무슨뜻이야">
+              문장 뜻 물어보기
+            </button>
+            <button class="prompt-chip" type="button" data-prompt="irritating은 어떤 느낌이야?">
+              단어 뉘앙스 보기
+            </button>
+            <button class="prompt-chip" type="button" data-prompt="break the ice 비슷한 표현도 알려줘">
+              비슷한 표현 찾기
+            </button>
+          </div>
+          <div id="lookup-result" class="lookup-result is-hidden" aria-live="polite">
+            <article id="lookup-conversation" class="lookup-card lookup-thread" aria-label="검색 결과 대화">
+              <div class="lookup-message lookup-message-user">
+                <p class="message-label">나</p>
+                <div id="lookup-user-bubble" class="lookup-bubble lookup-bubble-user">
+                  <div class="lookup-meta">
+                    <span id="lookup-type" class="language-chip">표현</span>
+                    <span class="language-chip">저장 전</span>
+                  </div>
+                  <h2 id="lookup-term" class="lookup-term"></h2>
+                </div>
+              </div>
+
+              <section
+                id="lookup-loading"
+                class="lookup-message lookup-message-assistant lookup-loading is-hidden"
+                role="status"
+                aria-live="polite"
+                aria-atomic="true"
+                hidden
+              >
+                <span class="assistant-avatar" aria-hidden="true">W</span>
+                <div class="lookup-message-body">
+                  <p class="message-label">Witness Me</p>
+                  <div class="lookup-bubble lookup-bubble-assistant lookup-bubble-typing">
+                    <div class="typing-dots" aria-hidden="true">
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    </div>
+                    <p id="loading-copy" class="loading-copy">답변을 정리하고 있어요.</p>
+                  </div>
+                </div>
+              </section>
+
+              <section class="lookup-message lookup-message-assistant" aria-labelledby="lookup-answer-label">
+                <span class="assistant-avatar" aria-hidden="true">W</span>
+                <div class="lookup-message-body">
+                  <p id="lookup-answer-label" class="message-label">Witness Me</p>
+                  <div id="lookup-assistant-bubble" class="lookup-bubble lookup-bubble-assistant">
+                    <div id="lookup-answer" class="lookup-answer"></div>
+                    <div class="lookup-legacy" aria-label="기본 해석 정보">
+                      <p id="lookup-meaning" class="lookup-text" data-label="뜻"></p>
+                      <p id="lookup-breakdown" class="lookup-text" data-label="포인트"></p>
+                      <p id="lookup-example" class="lookup-text" data-label="예문"></p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section
+                id="vocabulary-section"
+                class="lookup-message lookup-message-assistant vocabulary-section"
+                aria-labelledby="vocabulary-title"
+              >
+                <span class="assistant-avatar assistant-avatar-quiet" aria-hidden="true">W</span>
+                <div class="lookup-message-body">
+                  <div class="lookup-bubble lookup-bubble-tray">
+                    <div class="vocabulary-head">
+                      <div>
+                        <p class="message-label">저장 후보</p>
+                        <h3 id="vocabulary-title">복습에 넣을 표현을 골라요</h3>
+                      </div>
+                      <p id="vocabulary-helper" class="vocabulary-helper">
+                        선택하지 않으면 전체가 저장돼요.
+                      </p>
+                    </div>
+                    <div
+                      id="vocabulary-list"
+                      class="vocabulary-list"
+                      role="list"
+                      aria-describedby="vocabulary-helper"
+                    ></div>
+                  </div>
+                </div>
+              </section>
+
+              <div class="lookup-composer" aria-label="복습 저장">
+                <div class="lookup-actions">
+                  <button id="save-lookup" class="primary-btn" type="button">저장하고 복습에 넣기</button>
+                </div>
+              </div>
+            </article>
+          </div>
           <div class="ask-actions ask-actions-minimal">
-            <button id="manual-link" class="text-link" type="button">+ 직접 추가</button>
+            <button id="manual-link" class="text-link" type="button">직접 저장</button>
           </div>
         </form>
       </section>
 
       <section id="panel-quiz" class="panel" data-panel="quiz">
         <div class="panel-head">
-          <p class="eyebrow">바로 복습</p>
-          <h2>짧고 예측 가능한 퀴즈</h2>
+          <p class="eyebrow">복습</p>
+          <h2>저장한 표현을 퀴즈로 꺼내요</h2>
         </div>
         <div id="quiz-intro" class="quiz-intro">
-          <p>저장된 복습 항목에서 자동으로 출제해요.</p>
+          <p>저장한 단어, 숙어, 문장에서 5문제를 바로 풀어요.</p>
           <button id="start-quiz" class="primary-btn" type="button">퀴즈 시작</button>
         </div>
         <div id="quiz-card" class="quiz-card is-hidden">
           <p id="quiz-progress" class="quiz-progress"></p>
           <h3 id="quiz-question"></h3>
           <div id="quiz-choices" class="quiz-choices"></div>
-          <p id="quiz-feedback" class="quiz-feedback"></p>
+          <p id="quiz-feedback" class="quiz-feedback" role="status" aria-live="polite"></p>
           <button id="quiz-next" class="secondary-btn is-hidden" type="button">다음 문제</button>
         </div>
         <div id="quiz-done" class="quiz-done is-hidden">
@@ -86,62 +170,92 @@
 
       <section id="panel-routine" class="panel" data-panel="routine">
         <div class="panel-head">
-          <p class="eyebrow">시간 설정</p>
-          <h2>알림별 복습량 관리</h2>
-        </div>
-        <div class="routine-summary">
-          <p><strong id="reminder-count">0개</strong>의 알림이 있어요.</p>
-          <p>활성 알림: <strong id="active-reminder-count">0개</strong></p>
+          <p class="eyebrow">알림</p>
+          <h2>퀴즈 알림 시간을 정해요</h2>
         </div>
         <div class="routine-toolbar">
           <button
             id="reminder-form-toggle"
-            class="circle-btn"
+            class="add-reminder-btn"
             type="button"
             aria-expanded="false"
             aria-label="알림 추가 폼 열기"
           >
-            +
+            + 알림 추가
+          </button>
+        </div>
+        <div id="notification-permission-card" class="notification-card is-hidden">
+          <div>
+            <strong>브라우저 알림</strong>
+            <p id="notification-permission-copy">
+              알림을 허용하면 정해진 시간에 복습 퀴즈를 알려드릴게요.
+            </p>
+          </div>
+          <button id="notification-permission" class="secondary-btn compact-btn" type="button">
+            알림 허용
           </button>
         </div>
         <form id="reminder-form" class="reminder-form is-hidden">
-          <label for="reminder-time">알림 시간</label>
-          <input id="reminder-time" type="time" value="08:10" required />
-          <label for="reminder-pack">복습량</label>
-          <select id="reminder-pack">
-            <option value="10|5">10분 · 5문제</option>
-            <option value="30|15">30분 · 15문제</option>
-            <option value="60|30">60분 · 30문제</option>
-          </select>
-          <button class="primary-btn" type="submit">추가</button>
+          <div class="form-section">
+            <div class="field-head">
+              <span class="field-label">복습 시간</span>
+              <span id="selected-time-count" class="field-hint">추가할 시간을 입력하세요</span>
+            </div>
+            <div class="custom-time-row">
+              <label class="sr-only" for="reminder-time">직접 입력할 알림 시간</label>
+              <input id="reminder-time" type="time" />
+              <button id="reminder-time-add" class="secondary-btn compact-btn" type="button">
+                시간 추가
+              </button>
+            </div>
+            <div
+              id="pending-time-list"
+              class="pending-time-list"
+              aria-live="polite"
+            ></div>
+          </div>
+          <div class="form-section">
+            <label for="reminder-pack">복습량</label>
+            <select id="reminder-pack">
+              <option value="3|5">약 3분 · 5문제</option>
+              <option value="5|10">약 5분 · 10문제</option>
+              <option value="10|20">약 10분 · 20문제</option>
+            </select>
+          </div>
+          <button id="reminder-submit" class="primary-btn" type="submit" disabled>
+            시간을 추가해 주세요
+          </button>
         </form>
+        <div class="registered-head">
+          <h3>등록된 알림</h3>
+        </div>
         <div id="reminder-list" class="reminder-list" role="list"></div>
       </section>
 
       <section id="panel-memory" class="panel" data-panel="memory">
         <div class="panel-head">
-          <p class="eyebrow">기억 저장소</p>
-          <h2>저장된 표현 상태</h2>
+          <p class="eyebrow">저장소</p>
+          <h2>저장한 표현</h2>
         </div>
         <div id="memory-list" class="memory-list"></div>
       </section>
 
       <section id="panel-manual" class="panel" data-panel="manual">
         <div class="panel-head">
-          <p class="eyebrow">직접 추가</p>
-          <h2>이미 아는 표현도 넣어두세요</h2>
+          <p class="eyebrow">직접 저장</p>
+          <h2>표현을 직접 복습에 넣어요</h2>
         </div>
         <form id="manual-form" class="manual-form">
-          <label for="manual-expression">표현</label>
+          <label for="manual-expression">단어, 숙어, 문장</label>
           <input
             id="manual-expression"
             type="text"
-            aria-label="직접 추가 표현"
-            placeholder="예) break the ice"
+            aria-label="직접 저장할 언어 표현"
+            placeholder="예) take it for granted"
             required
           />
           <p class="manual-copy">
-            뜻과 예문은 AI가 자동으로 생성해서 복습 카드에 붙여둘게요.
+            뜻과 예문은 복습 카드로 정리해요.
           </p>
           <div class="manual-actions">
             <button id="manual-home" class="secondary-btn" type="button">홈으로</button>
@@ -150,6 +264,13 @@
         </form>
       </section>
     </main>
+
+    <nav class="bottom-nav" aria-label="주요 메뉴" data-active="home">
+      <button class="nav-item is-active" data-nav="home" type="button">홈</button>
+      <button class="nav-item" data-nav="quiz" type="button">복습</button>
+      <button class="nav-item" data-nav="routine" type="button">알림</button>
+      <button class="nav-item" data-nav="memory" type="button">저장소</button>
+    </nav>
 
     <script src="./app.js" defer></script>
   </body>
